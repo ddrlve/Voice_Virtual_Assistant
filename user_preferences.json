@@ -1,0 +1,13 @@
+{
+  "name": "Dian",
+  "preferred_greeting": "formal",
+  "time_format": "12hour",
+  "date_format": "full",
+  "notification_sound": true,
+  "wake_word": [
+    "aria",
+    "assistant",
+    "hey aria"
+  ],
+  "language": "en-US"
+}

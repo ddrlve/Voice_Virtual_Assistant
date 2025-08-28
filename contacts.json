@@ -1,0 +1,12 @@
+{
+  "egi": {
+    "name": "Egi",
+    "phone": "+62-xxx-xxx-xxxx",
+    "email": "egi@example.com"
+  },
+  "sophie": {
+    "name": "Sophie",
+    "phone": "+62-xxx-xxx-xxxx",
+    "email": "sophie@example.com"
+  }
+}

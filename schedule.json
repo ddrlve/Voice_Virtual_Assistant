@@ -1,0 +1,16 @@
+[
+  {
+    "time": "10:00",
+    "title": "Sales Meeting with Egi",
+    "location": "Conference Room A",
+    "priority": "high",
+    "date": "today"
+  },
+  {
+    "time": "17:00",
+    "title": "Coffee Shop with Sophie",
+    "location": "Starbucks Downtown",
+    "priority": "medium",
+    "date": "today"
+  }
+]
