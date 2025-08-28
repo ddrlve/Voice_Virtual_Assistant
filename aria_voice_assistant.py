@@ -109,16 +109,16 @@ class AriaAssistant:
         
         # Features
         self.commands = {
-            "Greetings": ["hello", "hi", "hey", "good morning", "good afternoon"],
-            "Time & Date": ["time", "clock", "date", "today"],
-            "Schedule": ["schedule", "agenda", "appointments", "meetings"],
-            "Weather": ["weather", "temperature", "forecast"],
-            "Search": ["search", "google", "find"],
-            "Calculator": ["calculate", "math", "multiply", "divide"],
-            "System": ["system", "computer", "performance"],
-            "Contacts": ["call", "contact", "phone"],
-            "Media": ["play", "music", "pause", "stop"],
-            "Exit": ["quit", "exit", "bye", "goodbye"]
+            "Greetings": ["hello", "hi", "hey", "good morning", "good afternoon", "good evening"],
+            "Time & Date": ["time", "clock", "date", "today", "what time", "current time"],
+            "Schedule": ["schedule", "agenda", "appointments", "meetings", "calendar"],
+            "Weather": ["weather", "temperature", "forecast", "climate", "how hot", "how cold"],
+            "Search": ["search", "google", "find", "look up", "look for", "browse"],
+            "Calculator": ["calculate", "math", "multiply", "divide", "add", "subtract", "what is", "what's"],
+            "System": ["system", "computer", "performance", "cpu", "memory", "battery"],
+            "Contacts": ["call", "contact", "phone", "email", "reach"],
+            "Media": ["play", "music", "pause", "stop", "song", "video"],
+            "Exit": ["quit", "exit", "bye", "goodbye", "stop", "close"]
         }
     
     def print_banner(self):
@@ -296,8 +296,9 @@ class AriaAssistant:
         if not REQUESTS_AVAILABLE:
             return "Weather service requires the requests library. Please install it with: pip install requests"
         
-        if not self.config['weather_api_key']:
-            return "I need a weather API key to provide weather information. You can get one free from OpenWeatherMap!"
+        # For demo purposes, provide mock weather data
+        if not self.config['weather_api_key'] or self.config['weather_api_key'] == "demo_key":
+            return f"Demo weather for {city}: Partly cloudy, 28°C, humidity 65%. Get your free API key from OpenWeatherMap for real weather data!"
         
         try:
             url = f"http://api.openweathermap.org/data/2.5/weather"
@@ -326,46 +327,87 @@ class AriaAssistant:
         """Safe calculator"""
         try:
             # Clean the expression
-            expression = expression.replace('calculate', '').replace('what is', '').strip()
+            expression = expression.replace('calculate', '').replace('what is', '').replace('what\'s', '').strip()
             
             # Word replacements
             replacements = {
                 'plus': '+', 'add': '+', 'and': '+',
-                'minus': '-', 'subtract': '-',
-                'times': '*', 'multiply': '*', 'multiplied by': '*',
-                'divided by': '/', 'divide': '/',
-                'squared': '**2'
+                'minus': '-', 'subtract': '-', 'take away': '-',
+                'times': '*', 'multiply': '*', 'multiplied by': '*', 'x': '*',
+                'divided by': '/', 'divide': '/', 'over': '/',
+                'squared': '**2', 'cubed': '**3',
+                'to the power of': '**', 'power': '**'
             }
             
             for word, symbol in replacements.items():
                 expression = expression.replace(word, symbol)
             
-            # Safe evaluation
+            # Handle common phrases
+            if 'square root' in expression:
+                num = expression.replace('square root of', '').strip()
+                try:
+                    result = float(num) ** 0.5
+                    return f"The square root of {num} is {result:.2f}"
+                except:
+                    return "Please specify a number for square root calculation."
+            
+            # Clean up extra spaces
+            expression = ' '.join(expression.split())
+            
+            # Safe evaluation - only allow basic math operations
             allowed_chars = set('0123456789+-*/.() ')
             if all(c in allowed_chars for c in expression):
+                # Replace common spoken numbers
+                expression = expression.replace('zero', '0').replace('one', '1').replace('two', '2')
+                expression = expression.replace('three', '3').replace('four', '4').replace('five', '5')
+                expression = expression.replace('six', '6').replace('seven', '7').replace('eight', '8')
+                expression = expression.replace('nine', '9').replace('ten', '10')
+                
                 result = eval(expression)
                 return f"The answer is {result}"
             else:
-                return "I can only do basic math calculations."
+                return "I can only do basic math calculations with numbers and operators."
                 
+        except ZeroDivisionError:
+            return "Cannot divide by zero!"
         except Exception:
-            return "I couldn't understand that calculation. Please try again."
+            return "I couldn't understand that calculation. Try saying something like 'calculate 5 plus 3' or 'what is 10 times 2'."
     
     def get_system_info(self) -> str:
         """Get system information"""
         try:
             import psutil
+            import platform
             
-            cpu = psutil.cpu_percent(interval=1)
+            # Get system info
+            cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
+            battery = None
             
-            return f"System status: CPU {cpu}%, Memory {memory.percent}%, Disk {(disk.used/disk.total)*100:.1f}%"
+            try:
+                battery = psutil.sensors_battery()
+            except:
+                pass
+            
+            # Format response
+            response = f"System status: CPU usage {cpu_percent}%, Memory usage {memory.percent}%"
+            
+            if battery:
+                battery_status = "charging" if battery.power_plugged else "on battery"
+                response += f", Battery {battery.percent}% ({battery_status})"
+            
+            # Add OS info
+            os_info = platform.system()
+            response += f". Running on {os_info}"
+            
+            return response
             
         except ImportError:
-            return "System monitoring requires psutil. Install with: pip install psutil"
+            # Fallback system info without psutil
+            import platform
+            return f"Basic system info: Running on {platform.system()} {platform.release()}. For detailed monitoring, install psutil with: pip install psutil"
         except Exception as e:
-            return f"Could not retrieve system information: {str(e)}"
+            return f"Could not retrieve complete system information. {str(e)}"
     
     def process_command(self, command: str) -> tuple[str, str]:
         """Process voice commands intelligently"""
@@ -416,13 +458,20 @@ class AriaAssistant:
         
         # Search
         elif any(word in command for word in self.commands["Search"]):
-            search_query = command.replace('search', '').replace('for', '').strip()
+            # Extract search query
+            search_query = command
+            for word in ['search', 'for', 'google', 'find', 'look up', 'look for']:
+                search_query = search_query.replace(word, '', 1).strip()
+            
             if search_query:
                 search_url = f"https://www.google.com/search?q={search_query.replace(' ', '+')}"
-                webbrowser.open(search_url)
-                return f"I've opened a web search for {search_query}", "happy"
+                try:
+                    webbrowser.open(search_url)
+                    return f"I've opened a web search for '{search_query}' in your browser", "happy"
+                except Exception:
+                    return f"I would search for '{search_query}' but couldn't open your browser. Try opening Google manually.", "concerned"
             else:
-                return "What would you like me to search for?", "neutral"
+                return "What would you like me to search for? Try saying 'search for Python programming'", "neutral"
         
         # Calculator
         elif any(word in command for word in self.commands["Calculator"]):
@@ -434,14 +483,39 @@ class AriaAssistant:
         
         # Contacts
         elif any(word in command for word in self.commands["Contacts"]):
+            # Check if user mentioned a specific contact
+            contact_found = False
             for name, contact in self.contacts.items():
-                if name.lower() in command:
-                    return f"{contact['name']}'s contact: Phone {contact['phone']}, Email {contact['email']}", "neutral"
-            return f"Available contacts: {', '.join([c['name'] for c in self.contacts.values()])}", "neutral"
+                if name.lower() in command or contact['name'].lower() in command:
+                    contact_found = True
+                    if 'call' in command or 'phone' in command:
+                        return f"I would call {contact['name']} at {contact['phone']}, but I can't make actual calls yet. You can call them manually!", "neutral"
+                    else:
+                        return f"{contact['name']}'s contact information: Phone {contact['phone']}, Email {contact['email']}", "neutral"
+            
+            if not contact_found:
+                contact_names = [c['name'] for c in self.contacts.values()]
+                return f"I have contacts for: {', '.join(contact_names)}. Try saying 'call [name]' or 'contact [name]'", "neutral"
         
         # Media
         elif any(word in command for word in self.commands["Media"]):
-            return "Media control feature is coming soon! I'll be able to control your music player.", "excited"
+            if 'play' in command:
+                # Extract song/artist name
+                music_query = command.replace('play', '').strip()
+                if music_query:
+                    # Open YouTube search for the song
+                    youtube_url = f"https://www.youtube.com/results?search_query={music_query.replace(' ', '+')}"
+                    try:
+                        webbrowser.open(youtube_url)
+                        return f"I've opened YouTube search for '{music_query}'. Click on a video to play it!", "excited"
+                    except:
+                        return f"I would play '{music_query}' but couldn't open your browser. Try opening YouTube manually.", "concerned"
+                else:
+                    return "What would you like me to play? Try saying 'play some jazz music' or 'play Taylor Swift'", "neutral"
+            elif 'pause' in command or 'stop' in command:
+                return "I can't control media playback directly yet, but you can use your keyboard spacebar to pause/play most media players!", "neutral"
+            else:
+                return "I can help you find music on YouTube! Try saying 'play [song name]' or 'play [artist name]'", "excited"
         
         # Exit
         elif any(word in command for word in self.commands["Exit"]):
