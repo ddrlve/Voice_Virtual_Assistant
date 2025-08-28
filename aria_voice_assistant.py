@@ -593,3 +593,19 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# web_aria.py - Streamlit version for portfolio
+import streamlit as st
+import speech_recognition as sr
+import pyttsx3
+import datetime
+import webbrowser
+from pathlib import Path
+
+st.set_page_config(
+    page_title="ARIA Voice Assistant",
+    page_icon="🎤",
+    layout="wide"
+)
+
+
