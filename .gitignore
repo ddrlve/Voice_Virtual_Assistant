@@ -1,0 +1,43 @@
+# .gitignore for ARIA Voice Assistant
+
+# Environment variables
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# User data (optional - uncomment if you want to keep these private)
+# conversation_history.json
+# user_preferences.json
+
+# Temporary files
+*.tmp
+*.temp
+
+# Audio files (if any)
+*.wav
+*.mp3
+*.m4a

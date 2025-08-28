@@ -1,0 +1,20 @@
+# speechrecognition - Voice recognition library
+speechrecognition==3.14.3
+
+# pyttsx3 - Text-to-speech library
+pyttsx3==2.99
+
+# pyaudio - Audio I/O library
+PyAudio==0.2.14
+
+# python-dotenv - Environment variables
+python-dotenv==1.1.1
+
+# requests - HTTP library
+requests==2.32.3
+
+# psutil - System monitoring
+psutil==6.1.1
+
+# rich - Beautiful console output (optional but recommended)
+rich==14.1.0
