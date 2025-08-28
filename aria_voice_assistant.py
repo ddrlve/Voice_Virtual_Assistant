@@ -49,6 +49,15 @@ except ImportError:
     print("Warning: requests not installed. Run: pip install requests")
     REQUESTS_AVAILABLE = False
     requests = None
+
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    print("Warning: psutil not installed. Run: pip install psutil")
+    PSUTIL_AVAILABLE = False
+    psutil = None
+
 # Console colors and formatting
 class Colors:
     CYAN = '\033[96m'
@@ -376,8 +385,9 @@ class AriaAssistant:
     def get_system_info(self) -> str:
         """Get system information"""
         try:
-            import psutil
-            import platform
+            if not PSUTIL_AVAILABLE:
+                import platform
+                return f"Basic system info: Running on {platform.system()} {platform.release()}. For detailed monitoring, install psutil with: pip install psutil"
             
             # Get system info
             cpu_percent = psutil.cpu_percent(interval=1)
@@ -397,8 +407,8 @@ class AriaAssistant:
                 response += f", Battery {battery.percent}% ({battery_status})"
             
             # Add OS info
-            os_info = platform.system()
-            response += f". Running on {os_info}"
+            import platform
+            response += f". Running on {platform.system()}"
             
             return response
             
@@ -534,7 +544,7 @@ class AriaAssistant:
         print(f"{Colors.WHITE}Commands available: {len(self.commands)}{Colors.END}")
     
     def run(self):
-        """🚀 Main application loop"""
+        """Main application loop"""
         try:
             # Clear screen and show banner
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -566,46 +576,32 @@ class AriaAssistant:
                     time.sleep(0.5)
                     
                 except KeyboardInterrupt:
-                    print(f"\n{Colors.YELLOW}Greeting Manual exit detected{Colors.END}")
+                    print(f"\n{Colors.YELLOW}Manual exit detected{Colors.END}")
                     self.speak("Goodbye! Exiting gracefully.", "happy")
                     break
                 except Exception as e:
-                    print(f"{Colors.RED}❌ Error: {e}{Colors.END}")
+                    print(f"{Colors.RED}Error: {e}{Colors.END}")
                     self.speak("I encountered an error. Let me try again.", "concerned")
         
         except Exception as e:
-            print(f"{Colors.RED}💥 Critical error: {e}{Colors.END}")
+            print(f"{Colors.RED}Critical error: {e}{Colors.END}")
         
         finally:
             # Show session stats and cleanup
             self.show_session_stats()
-            print(f"\n{Colors.CYAN}{Colors.BOLD}✨ Thank you for using {self.assistant_name}! ✨{Colors.END}")
+            print(f"\n{Colors.CYAN}{Colors.BOLD}Thank you for using {self.assistant_name}!{Colors.END}")
 
 def main():
-    """🎯 Application entry point"""
+    """Application entry point"""
     try:
         assistant = AriaAssistant()
         assistant.run()
     except KeyboardInterrupt:
-        print(f"\n{Colors.YELLOW}Greeting Goodbye!{Colors.END}")
+        print(f"\n{Colors.YELLOW}Goodbye!{Colors.END}")
     except Exception as e:
-        print(f"{Colors.RED}💥 Error starting assistant: {e}{Colors.END}")
+        print(f"{Colors.RED}Error starting assistant: {e}{Colors.END}")
 
 if __name__ == "__main__":
     main()
-
-# web_aria.py - Streamlit version for portfolio
-import streamlit as st
-import speech_recognition as sr
-import pyttsx3
-import datetime
-import webbrowser
-from pathlib import Path
-
-st.set_page_config(
-    page_title="ARIA Voice Assistant",
-    page_icon="🎤",
-    layout="wide"
-)
 
 
