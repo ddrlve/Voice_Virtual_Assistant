@@ -1,6 +1,6 @@
 """
 ARIA - Advanced Responsive Intelligence Assistant
-Professional Voice Assistant with Elegant Interface
+Professional Voice Assistant
 Version 2.0.0 - Created by Dian
 """
 
@@ -16,47 +16,47 @@ from typing import Dict, List, Optional
 
 # Voice and Speech Libraries with error handling
 try:
-    import speech_recognition as sr
+    import speech_recognition as sr  # type: ignore
     SPEECH_RECOGNITION_AVAILABLE = True
 except ImportError:
     print("Warning: speech_recognition not installed. Run: pip install speechrecognition")
     SPEECH_RECOGNITION_AVAILABLE = False
-    sr = None
+    sr = None  # type: ignore
 
 try:
-    import pyttsx3
+    import pyttsx3  # type: ignore
     TTS_AVAILABLE = True
 except ImportError:
     print("Warning: pyttsx3 not installed. Run: pip install pyttsx3")
     TTS_AVAILABLE = False
-    pyttsx3 = None
+    pyttsx3 = None  # type: ignore
 
 # Environment and HTTP
 try:
-    from dotenv import load_dotenv
+    from dotenv import load_dotenv  # type: ignore
     load_dotenv()
     DOTENV_AVAILABLE = True
 except ImportError:
     print("Warning: python-dotenv not installed. Run: pip install python-dotenv")
     DOTENV_AVAILABLE = False
-    def load_dotenv():
+    def load_dotenv():  # type: ignore
         pass
 
 try:
-    import requests
+    import requests  # type: ignore
     REQUESTS_AVAILABLE = True
 except ImportError:
     print("Warning: requests not installed. Run: pip install requests")
     REQUESTS_AVAILABLE = False
-    requests = None
+    requests = None  # type: ignore
 
 try:
-    import psutil
+    import psutil  # type: ignore
     PSUTIL_AVAILABLE = True
 except ImportError:
     print("Warning: psutil not installed. Run: pip install psutil")
     PSUTIL_AVAILABLE = False
-    psutil = None
+    psutil = None  # type: ignore
 
 # Console colors and formatting
 class Colors:
@@ -162,6 +162,9 @@ class AriaAssistant:
     
     def setup_speech_recognition(self):
         """Initialize speech recognition"""
+        if not SPEECH_RECOGNITION_AVAILABLE or sr is None:
+            return
+            
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
         
@@ -178,6 +181,9 @@ class AriaAssistant:
     
     def setup_text_to_speech(self):
         """Initialize text-to-speech"""
+        if not TTS_AVAILABLE or pyttsx3 is None:
+            return
+            
         self.tts = pyttsx3.init()
         
         # Get available voices and try to set a pleasant one
@@ -302,7 +308,7 @@ class AriaAssistant:
     
     def get_weather(self, city: str = "Jakarta") -> str:
         """Get weather information"""
-        if not REQUESTS_AVAILABLE:
+        if not REQUESTS_AVAILABLE or requests is None:
             return "Weather service requires the requests library. Please install it with: pip install requests"
         
         # For demo purposes, provide mock weather data
@@ -385,7 +391,7 @@ class AriaAssistant:
     def get_system_info(self) -> str:
         """Get system information"""
         try:
-            if not PSUTIL_AVAILABLE:
+            if not PSUTIL_AVAILABLE or psutil is None:
                 import platform
                 return f"Basic system info: Running on {platform.system()} {platform.release()}. For detailed monitoring, install psutil with: pip install psutil"
             
@@ -531,9 +537,8 @@ class AriaAssistant:
         elif any(word in command for word in self.commands["Exit"]):
             return "goodbye", "happy"
         
-        # Default
-        else:
-            return "I can help with time, weather, schedule, calculations, web search, and more. What would you like to do?", "thinking"
+        # Default case - this ensures there's always a return
+        return "I can help with time, weather, schedule, calculations, web search, and more. What would you like to do?", "thinking"
     
     def show_session_stats(self):
         """Show session statistics"""
