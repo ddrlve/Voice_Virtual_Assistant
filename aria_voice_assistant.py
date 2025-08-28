@@ -14,13 +14,41 @@ import threading
 from pathlib import Path
 from typing import Dict, List, Optional
 
-# Voice and Speech Libraries
-import speech_recognition as sr
-import pyttsx3
+# Voice and Speech Libraries with error handling
+try:
+    import speech_recognition as sr
+    SPEECH_RECOGNITION_AVAILABLE = True
+except ImportError:
+    print("⚠️  Warning: speech_recognition not installed. Run: pip install speechrecognition")
+    SPEECH_RECOGNITION_AVAILABLE = False
+    sr = None
+
+try:
+    import pyttsx3
+    TTS_AVAILABLE = True
+except ImportError:
+    print("⚠️  Warning: pyttsx3 not installed. Run: pip install pyttsx3")
+    TTS_AVAILABLE = False
+    pyttsx3 = None
 
 # Environment and HTTP
-from dotenv import load_dotenv
-import requests
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    DOTENV_AVAILABLE = True
+except ImportError:
+    print("⚠️  Warning: python-dotenv not installed. Run: pip install python-dotenv")
+    DOTENV_AVAILABLE = False
+    def load_dotenv():
+        pass
+
+try:
+    import requests
+    REQUESTS_AVAILABLE = True
+except ImportError:
+    print("⚠️  Warning: requests not installed. Run: pip install requests")
+    REQUESTS_AVAILABLE = False
+    requests = None
 
 # Console colors and formatting
 class Colors:
@@ -45,6 +73,15 @@ class AriaAssistant:
     """
     
     def __init__(self):
+        # Check required dependencies
+        if not SPEECH_RECOGNITION_AVAILABLE:
+            print(f"{Colors.RED}❌ Speech Recognition not available. Please install: pip install speechrecognition{Colors.END}")
+            sys.exit(1)
+        
+        if not TTS_AVAILABLE:
+            print(f"{Colors.RED}❌ Text-to-Speech not available. Please install: pip install pyttsx3{Colors.END}")
+            sys.exit(1)
+        
         self.user_name = "Dian"
         self.assistant_name = "ARIA"
         self.version = "2.0.0"
@@ -58,8 +95,8 @@ class AriaAssistant:
             "voice_rate": 180,
             "voice_volume": 0.9,
             "listen_timeout": 5,
-            "weather_api_key": os.getenv("WEATHER_API_KEY", ""),
-            "openai_api_key": os.getenv("OPENAI_API_KEY", ""),
+            "weather_api_key": os.getenv("WEATHER_API_KEY", "") if DOTENV_AVAILABLE else "",
+            "openai_api_key": os.getenv("OPENAI_API_KEY", "") if DOTENV_AVAILABLE else "",
         }
         
         # Initialize components
@@ -223,6 +260,10 @@ class AriaAssistant:
     
     def listen(self) -> Optional[str]:
         """🎤 Listen for voice input"""
+        if not SPEECH_RECOGNITION_AVAILABLE or sr is None:
+            print(f"{Colors.RED}❌ Speech recognition not available{Colors.END}")
+            return None
+            
         self.is_listening = True
         
         try:
@@ -237,20 +278,25 @@ class AriaAssistant:
             print(f"{Colors.GREEN}{Colors.BOLD}👤 {self.user_name}:{Colors.END} {Colors.WHITE}{text}{Colors.END}")
             return text.lower()
             
-        except sr.WaitTimeoutError:
-            print(f"{Colors.DIM}⏱️ Listening timeout{Colors.END}")
-            return None
-        except sr.UnknownValueError:
-            print(f"{Colors.RED}❓ Could not understand audio{Colors.END}")
-            return None
-        except sr.RequestError as e:
-            print(f"{Colors.RED}🚫 Speech recognition error: {e}{Colors.END}")
+        except Exception as e:
+            # Handle all speech recognition exceptions generically
+            if "WaitTimeoutError" in str(type(e)):
+                print(f"{Colors.DIM}⏱️ Listening timeout{Colors.END}")
+            elif "UnknownValueError" in str(type(e)):
+                print(f"{Colors.RED}❓ Could not understand audio{Colors.END}")
+            elif "RequestError" in str(type(e)):
+                print(f"{Colors.RED}🚫 Speech recognition error: {e}{Colors.END}")
+            else:
+                print(f"{Colors.RED}🚫 Error: {e}{Colors.END}")
             return None
         finally:
             self.is_listening = False
     
     def get_weather(self, city: str = "Jakarta") -> str:
         """🌤️ Get weather information"""
+        if not REQUESTS_AVAILABLE:
+            return "Weather service requires the requests library. Please install it with: pip install requests"
+        
         if not self.config['weather_api_key']:
             return "I need a weather API key to provide weather information. You can get one free from OpenWeatherMap!"
         
@@ -319,8 +365,8 @@ class AriaAssistant:
             
         except ImportError:
             return "System monitoring requires psutil. Install with: pip install psutil"
-        except Exception:
-            return "Could not retrieve system information."
+        except Exception as e:
+            return f"Could not retrieve system information: {str(e)}"
     
     def process_command(self, command: str) -> tuple[str, str]:
         """🧠 Process voice commands intelligently"""
