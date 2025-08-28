@@ -1,5 +1,5 @@
 """
-🎙️ ARIA - Advanced Responsive Intelligence Assistant
+ARIA - Advanced Responsive Intelligence Assistant
 Professional Voice Assistant with Elegant Interface
 Version 2.0.0 - Created by Dian
 """
@@ -19,7 +19,7 @@ try:
     import speech_recognition as sr
     SPEECH_RECOGNITION_AVAILABLE = True
 except ImportError:
-    print("⚠️  Warning: speech_recognition not installed. Run: pip install speechrecognition")
+    print("Warning: speech_recognition not installed. Run: pip install speechrecognition")
     SPEECH_RECOGNITION_AVAILABLE = False
     sr = None
 
@@ -27,7 +27,7 @@ try:
     import pyttsx3
     TTS_AVAILABLE = True
 except ImportError:
-    print("⚠️  Warning: pyttsx3 not installed. Run: pip install pyttsx3")
+    print("Warning: pyttsx3 not installed. Run: pip install pyttsx3")
     TTS_AVAILABLE = False
     pyttsx3 = None
 
@@ -37,7 +37,7 @@ try:
     load_dotenv()
     DOTENV_AVAILABLE = True
 except ImportError:
-    print("⚠️  Warning: python-dotenv not installed. Run: pip install python-dotenv")
+    print("Warning: python-dotenv not installed. Run: pip install python-dotenv")
     DOTENV_AVAILABLE = False
     def load_dotenv():
         pass
@@ -46,10 +46,9 @@ try:
     import requests
     REQUESTS_AVAILABLE = True
 except ImportError:
-    print("⚠️  Warning: requests not installed. Run: pip install requests")
+    print("Warning: requests not installed. Run: pip install requests")
     REQUESTS_AVAILABLE = False
     requests = None
-
 # Console colors and formatting
 class Colors:
     CYAN = '\033[96m'
@@ -68,7 +67,7 @@ load_dotenv()
 
 class AriaAssistant:
     """
-    🎭 ARIA - Advanced Responsive Intelligence Assistant
+    ARIA - Advanced Responsive Intelligence Assistant
     Professional Voice Assistant with Elegant Features
     """
     
@@ -110,38 +109,38 @@ class AriaAssistant:
         
         # Features
         self.commands = {
-            "🗣️ Greetings": ["hello", "hi", "hey", "good morning", "good afternoon"],
-            "⏰ Time & Date": ["time", "clock", "date", "today"],
-            "📅 Schedule": ["schedule", "agenda", "appointments", "meetings"],
-            "🌤️ Weather": ["weather", "temperature", "forecast"],
-            "🔍 Search": ["search", "google", "find"],
-            "🧮 Calculator": ["calculate", "math", "multiply", "divide"],
-            "📊 System": ["system", "computer", "performance"],
-            "👥 Contacts": ["call", "contact", "phone"],
-            "🎵 Media": ["play", "music", "pause", "stop"],
-            "🚪 Exit": ["quit", "exit", "bye", "goodbye"]
+            "Greetings": ["hello", "hi", "hey", "good morning", "good afternoon"],
+            "Time & Date": ["time", "clock", "date", "today"],
+            "Schedule": ["schedule", "agenda", "appointments", "meetings"],
+            "Weather": ["weather", "temperature", "forecast"],
+            "Search": ["search", "google", "find"],
+            "Calculator": ["calculate", "math", "multiply", "divide"],
+            "System": ["system", "computer", "performance"],
+            "Contacts": ["call", "contact", "phone"],
+            "Media": ["play", "music", "pause", "stop"],
+            "Exit": ["quit", "exit", "bye", "goodbye"]
         }
     
     def print_banner(self):
-        """🎨 Display startup banner"""
+        """Display startup banner"""
         banner = f"""
 {Colors.CYAN}{Colors.BOLD}
 ╭─────────────────────────────────────────────────────────────╮
 │                                                             │
-│    🎙️  A R I A  -  Voice Assistant v{self.version}                │
+│     A R I A  -  Voice Assistant v{self.version}             │
 │         Advanced Responsive Intelligence Assistant          │
 │                                                             │
-│    👋 Welcome back, {Colors.BLUE}{self.user_name}{Colors.CYAN}!                              │
-│    🕐 Session: {self.session_start_time.strftime('%H:%M:%S')} - {datetime.datetime.now().strftime('%Y-%m-%d')}                   │
-│    🎯 Ready to assist with your daily tasks                │
+│     Welcome back, {Colors.BLUE}{self.user_name}{Colors.CYAN}!                              │
+│     Session: {self.session_start_time.strftime('%H:%M:%S')} - {datetime.datetime.now().strftime('%Y-%m-%d')}                   │
+│     Ready to assist with your daily tasks                   │
 │                                                             │
 ╰─────────────────────────────────────────────────────────────╯
 {Colors.END}"""
         print(banner)
     
     def print_features(self):
-        """📋 Display available features"""
-        print(f"{Colors.BOLD}{Colors.PURPLE}📋 Available Commands:{Colors.END}")
+        """Display available features"""
+        print(f"{Colors.BOLD}{Colors.PURPLE}Available Commands:{Colors.END}")
         print(f"{Colors.DIM}{'─' * 60}{Colors.END}")
         
         for category, commands in self.commands.items():
@@ -149,15 +148,15 @@ class AriaAssistant:
             print(f"{Colors.CYAN}{category:<20}{Colors.WHITE} Try: '{example}'{Colors.END}")
         
         print(f"{Colors.DIM}{'─' * 60}{Colors.END}")
-        print(f"{Colors.YELLOW}💡 Tip: Speak naturally and clearly for best results{Colors.END}")
+        print(f"{Colors.YELLOW}Tip: Speak naturally and clearly for best results{Colors.END}")
         print()
     
     def setup_speech_recognition(self):
-        """🎤 Initialize speech recognition"""
+        """Initialize speech recognition"""
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
         
-        print(f"{Colors.BLUE}🎤 Calibrating microphone...{Colors.END}")
+        print(f"{Colors.BLUE}Calibrating microphone...{Colors.END}")
         with self.microphone as source:
             self.recognizer.adjust_for_ambient_noise(source, duration=1)
         
@@ -166,10 +165,10 @@ class AriaAssistant:
         self.recognizer.dynamic_energy_threshold = True
         self.recognizer.pause_threshold = 0.8
         
-        print(f"{Colors.GREEN}✅ Microphone ready{Colors.END}")
+        print(f"{Colors.GREEN}Microphone ready{Colors.END}")
     
     def setup_text_to_speech(self):
-        """🗣️ Initialize text-to-speech"""
+        """Initialize text-to-speech"""
         self.tts = pyttsx3.init()
         
         # Get available voices and try to set a pleasant one
@@ -183,10 +182,10 @@ class AriaAssistant:
         self.tts.setProperty('rate', self.config['voice_rate'])
         self.tts.setProperty('volume', self.config['voice_volume'])
         
-        print(f"{Colors.GREEN}✅ Voice engine ready{Colors.END}")
+        print(f"{Colors.GREEN}Voice engine ready{Colors.END}")
     
     def load_schedule(self) -> List[Dict]:
-        """📅 Load schedule data"""
+        """Load schedule data"""
         schedule_file = Path("schedule.json")
         default_schedule = [
             {
@@ -217,7 +216,7 @@ class AriaAssistant:
         return default_schedule
     
     def load_contacts(self) -> Dict:
-        """👥 Load contacts data"""
+        """Load contacts data"""
         contacts_file = Path("contacts.json")
         default_contacts = {
             "egi": {"name": "Egi", "phone": "+62-xxx-xxx-1234", "email": "egi@company.com"},
@@ -237,19 +236,19 @@ class AriaAssistant:
         return default_contacts
     
     def speak(self, text: str, emotion: str = "neutral"):
-        """🗣️ Speak with visual feedback"""
+        """Speak with visual feedback"""
         self.is_speaking = True
         
         # Emotion icons
         emotions = {
-            "happy": "😊", "excited": "🎉", "thinking": "🤔", 
-            "neutral": "🤖", "concerned": "😐", "greeting": "👋"
+            "happy": "Happy", "excited": "Excited", "thinking": "Thinking", 
+            "neutral": "Speaking", "concerned": "Concerned", "greeting": "Greeting"
         }
         
-        icon = emotions.get(emotion, "🤖")
+        icon = emotions.get(emotion, "Speaking")
         
         # Visual feedback
-        print(f"{Colors.CYAN}{Colors.BOLD}{icon} {self.assistant_name}:{Colors.END} {Colors.WHITE}{text}{Colors.END}")
+        print(f"{Colors.CYAN}{Colors.BOLD}[{icon}] {self.assistant_name}:{Colors.END} {Colors.WHITE}{text}{Colors.END}")
         
         # Speak the text
         self.tts.say(text)
@@ -259,7 +258,7 @@ class AriaAssistant:
         self.conversation_count += 1
     
     def listen(self) -> Optional[str]:
-        """🎤 Listen for voice input"""
+        """Listen for voice input"""
         if not SPEECH_RECOGNITION_AVAILABLE or sr is None:
             print(f"{Colors.RED}❌ Speech recognition not available{Colors.END}")
             return None
@@ -267,33 +266,33 @@ class AriaAssistant:
         self.is_listening = True
         
         try:
-            print(f"{Colors.YELLOW}🎤 Listening... (speak now){Colors.END}")
+            print(f"{Colors.YELLOW}Listening... (speak now){Colors.END}")
             
             with self.microphone as source:
                 audio = self.recognizer.listen(source, timeout=self.config['listen_timeout'])
             
-            print(f"{Colors.BLUE}🧠 Processing...{Colors.END}")
+            print(f"{Colors.BLUE}Processing...{Colors.END}")
             text = self.recognizer.recognize_google(audio)
             
-            print(f"{Colors.GREEN}{Colors.BOLD}👤 {self.user_name}:{Colors.END} {Colors.WHITE}{text}{Colors.END}")
+            print(f"{Colors.GREEN}{Colors.BOLD}{self.user_name}:{Colors.END} {Colors.WHITE}{text}{Colors.END}")
             return text.lower()
             
         except Exception as e:
             # Handle all speech recognition exceptions generically
             if "WaitTimeoutError" in str(type(e)):
-                print(f"{Colors.DIM}⏱️ Listening timeout{Colors.END}")
+                print(f"{Colors.DIM}Listening timeout{Colors.END}")
             elif "UnknownValueError" in str(type(e)):
-                print(f"{Colors.RED}❓ Could not understand audio{Colors.END}")
+                print(f"{Colors.RED}Could not understand audio{Colors.END}")
             elif "RequestError" in str(type(e)):
-                print(f"{Colors.RED}🚫 Speech recognition error: {e}{Colors.END}")
+                print(f"{Colors.RED}Speech recognition error: {e}{Colors.END}")
             else:
-                print(f"{Colors.RED}🚫 Error: {e}{Colors.END}")
+                print(f"{Colors.RED}Error: {e}{Colors.END}")
             return None
         finally:
             self.is_listening = False
     
     def get_weather(self, city: str = "Jakarta") -> str:
-        """🌤️ Get weather information"""
+        """Get weather information"""
         if not REQUESTS_AVAILABLE:
             return "Weather service requires the requests library. Please install it with: pip install requests"
         
@@ -324,7 +323,7 @@ class AriaAssistant:
             return "Weather service is currently unavailable."
     
     def calculate(self, expression: str) -> str:
-        """🧮 Safe calculator"""
+        """Safe calculator"""
         try:
             # Clean the expression
             expression = expression.replace('calculate', '').replace('what is', '').strip()
@@ -353,7 +352,7 @@ class AriaAssistant:
             return "I couldn't understand that calculation. Please try again."
     
     def get_system_info(self) -> str:
-        """📊 Get system information"""
+        """Get system information"""
         try:
             import psutil
             
@@ -369,10 +368,10 @@ class AriaAssistant:
             return f"Could not retrieve system information: {str(e)}"
     
     def process_command(self, command: str) -> tuple[str, str]:
-        """🧠 Process voice commands intelligently"""
+        """Process voice commands intelligently"""
         
         # Greetings
-        if any(word in command for word in self.commands["🗣️ Greetings"]):
+        if any(word in command for word in self.commands["Greetings"]):
             hour = datetime.datetime.now().hour
             if hour < 12:
                 greeting = "Good morning"
@@ -384,7 +383,7 @@ class AriaAssistant:
             return f"{greeting}, {self.user_name}! I'm {self.assistant_name}, your voice assistant. How can I help you today?", "greeting"
         
         # Time & Date
-        elif any(word in command for word in self.commands["⏰ Time & Date"]):
+        elif any(word in command for word in self.commands["Time & Date"]):
             now = datetime.datetime.now()
             if 'time' in command or 'clock' in command:
                 return f"The current time is {now.strftime('%I:%M %p')}", "neutral"
@@ -392,7 +391,7 @@ class AriaAssistant:
                 return f"Today is {now.strftime('%A, %B %d, %Y')}", "neutral"
         
         # Schedule
-        elif any(word in command for word in self.commands["📅 Schedule"]):
+        elif any(word in command for word in self.commands["Schedule"]):
             if self.schedule:
                 schedule_text = "Your schedule for today: "
                 for item in self.schedule:
@@ -402,7 +401,7 @@ class AriaAssistant:
                 return "You have no appointments scheduled for today.", "neutral"
         
         # Weather
-        elif any(word in command for word in self.commands["🌤️ Weather"]):
+        elif any(word in command for word in self.commands["Weather"]):
             city = "Jakarta"
             words = command.split()
             if 'in' in words:
@@ -416,7 +415,7 @@ class AriaAssistant:
             return self.get_weather(city), "neutral"
         
         # Search
-        elif any(word in command for word in self.commands["🔍 Search"]):
+        elif any(word in command for word in self.commands["Search"]):
             search_query = command.replace('search', '').replace('for', '').strip()
             if search_query:
                 search_url = f"https://www.google.com/search?q={search_query.replace(' ', '+')}"
@@ -426,26 +425,26 @@ class AriaAssistant:
                 return "What would you like me to search for?", "neutral"
         
         # Calculator
-        elif any(word in command for word in self.commands["🧮 Calculator"]):
+        elif any(word in command for word in self.commands["Calculator"]):
             return self.calculate(command), "thinking"
         
         # System
-        elif any(word in command for word in self.commands["📊 System"]):
+        elif any(word in command for word in self.commands["System"]):
             return self.get_system_info(), "neutral"
         
         # Contacts
-        elif any(word in command for word in self.commands["👥 Contacts"]):
+        elif any(word in command for word in self.commands["Contacts"]):
             for name, contact in self.contacts.items():
                 if name.lower() in command:
                     return f"{contact['name']}'s contact: Phone {contact['phone']}, Email {contact['email']}", "neutral"
             return f"Available contacts: {', '.join([c['name'] for c in self.contacts.values()])}", "neutral"
         
         # Media
-        elif any(word in command for word in self.commands["🎵 Media"]):
+        elif any(word in command for word in self.commands["Media"]):
             return "Media control feature is coming soon! I'll be able to control your music player.", "excited"
         
         # Exit
-        elif any(word in command for word in self.commands["🚪 Exit"]):
+        elif any(word in command for word in self.commands["Exit"]):
             return "goodbye", "happy"
         
         # Default
@@ -453,9 +452,9 @@ class AriaAssistant:
             return "I can help with time, weather, schedule, calculations, web search, and more. What would you like to do?", "thinking"
     
     def show_session_stats(self):
-        """📊 Show session statistics"""
+        """Show session statistics"""
         duration = datetime.datetime.now() - self.session_start_time
-        print(f"\n{Colors.CYAN}{Colors.BOLD}📊 Session Statistics:{Colors.END}")
+        print(f"\n{Colors.CYAN}{Colors.BOLD}Session Statistics:{Colors.END}")
         print(f"{Colors.WHITE}Duration: {duration}{Colors.END}")
         print(f"{Colors.WHITE}Conversations: {self.conversation_count}{Colors.END}")
         print(f"{Colors.WHITE}Commands available: {len(self.commands)}{Colors.END}")
@@ -493,7 +492,7 @@ class AriaAssistant:
                     time.sleep(0.5)
                     
                 except KeyboardInterrupt:
-                    print(f"\n{Colors.YELLOW}👋 Manual exit detected{Colors.END}")
+                    print(f"\n{Colors.YELLOW}Greeting Manual exit detected{Colors.END}")
                     self.speak("Goodbye! Exiting gracefully.", "happy")
                     break
                 except Exception as e:
@@ -514,7 +513,7 @@ def main():
         assistant = AriaAssistant()
         assistant.run()
     except KeyboardInterrupt:
-        print(f"\n{Colors.YELLOW}👋 Goodbye!{Colors.END}")
+        print(f"\n{Colors.YELLOW}Greeting Goodbye!{Colors.END}")
     except Exception as e:
         print(f"{Colors.RED}💥 Error starting assistant: {e}{Colors.END}")
 
