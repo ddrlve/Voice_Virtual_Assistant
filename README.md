@@ -147,18 +147,18 @@ The launcher will:
 
 Speak naturally; ARIA matches on keywords contained anywhere in what you say, not on exact phrases.
 
-| Category      | Example phrases                                    | What it does                                   |
-|---------------|------------------------------------------------------|-------------------------------------------------|
-| Greetings     | "Hello", "Hi ARIA", "Good morning"                   | Returns a time-appropriate greeting             |
-| Time and Date | "What time is it?", "What's the date?"               | Reads the current time or date                  |
-| Schedule      | "What's my schedule?", "Any meetings?"                | Reads out entries from `schedule.json`          |
-| Weather       | "How's the weather?", "Weather in Tokyo"              | Reads weather for a city (defaults to Jakarta)  |
-| Search        | "Search for Python tutorials"                         | Opens a Google search in your default browser   |
-| Calculator    | "Calculate 25 times 4", "What's 100 plus 50?"         | Evaluates a basic arithmetic expression         |
-| System        | "System status", "Computer performance"               | Reports CPU, memory, and battery status         |
-| Contacts      | "Call Egi", "Contact Sophie"                           | Looks up an entry from `contacts.json`          |
-| Media         | "Play some jazz music"                                 | Opens a YouTube search for the requested song    |
-| Exit          | "Goodbye", "Quit", "Exit"                              | Says goodbye and ends the session               |
+| Category      | Example phrases                               | What it does                                   |
+| ------------- | --------------------------------------------- | ---------------------------------------------- |
+| Greetings     | "Hello", "Hi ARIA", "Good morning"            | Returns a time-appropriate greeting            |
+| Time and Date | "What time is it?", "What's the date?"        | Reads the current time or date                 |
+| Schedule      | "What's my schedule?", "Any meetings?"        | Reads out entries from `schedule.json`         |
+| Weather       | "How's the weather?", "Weather in Tokyo"      | Reads weather for a city (defaults to Jakarta) |
+| Search        | "Search for Python tutorials"                 | Opens a Google search in your default browser  |
+| Calculator    | "Calculate 25 times 4", "What's 100 plus 50?" | Evaluates a basic arithmetic expression        |
+| System        | "System status", "Computer performance"       | Reports CPU, memory, and battery status        |
+| Contacts      | "Call Egi", "Contact Sophie"                  | Looks up an entry from `contacts.json`         |
+| Media         | "Play some jazz music"                        | Opens a YouTube search for the requested song  |
+| Exit          | "Goodbye", "Quit", "Exit"                     | Says goodbye and ends the session              |
 
 Any phrase that doesn't match a category falls back to a generic help message listing what ARIA can do.
 
@@ -251,7 +251,3 @@ pip install --upgrade -r requirements.txt
 - Contact "calls" only read out the stored phone number; ARIA cannot place an actual phone call.
 - Media commands open a YouTube search in the browser; ARIA does not control playback directly.
 - `conversation_history.json` and `user_preferences.json` are not wired up in the current version (see [Project Structure](#project-structure)).
-
-## License
-
-Licensed under the MIT License. See [LICENSE](LICENSE) for the full text.
