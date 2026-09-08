@@ -1,0 +1,26 @@
+# Claude Code / Claude Remember plugin
+.claude/
+.remember/
+CLAUDE.local.md
+
+# Secrets / environment configuration
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Editors / IDEs
+.vscode/
+.idea/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
