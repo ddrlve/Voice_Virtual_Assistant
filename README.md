@@ -57,8 +57,7 @@ Voice Virtual Assistant/
 │                                read or written by the application
 ├── user_preferences.json        Present in the repository but not currently
 │                                read or written by the application
-├── .env                         Environment variables (not committed; you
-│                                create this yourself, see Configuration)
+├── .env                         Environment variables (not committed)
 ├── LICENSE                      MIT License
 └── README.md                    This file
 ```
